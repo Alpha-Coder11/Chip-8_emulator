@@ -1,7 +1,13 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 
+#include "config.h"
+#include "chip8.h"
+
 #define UNUSED(x) (void)(x)
+
+struct_chip8_t chip8;
+
 
 int main(int argc, char** argv) 
 {
@@ -9,11 +15,11 @@ int main(int argc, char** argv)
     UNUSED(argv);
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_Window* window = SDL_CreateWindow(
-        "Hello, World!",
+        EMULATOR_WINDOW_TITLE,
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        800,
-        600,
+        CHIP8_WIDTH * EMULATOR_WINDOW_SCALE,
+        CHIP8_HEIGHT * EMULATOR_WINDOW_SCALE,
         SDL_WINDOW_SHOWN
     );
 
