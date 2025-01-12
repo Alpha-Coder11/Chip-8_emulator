@@ -3,7 +3,7 @@
 
 static void chip8_memory_in_bound(uint32_t index)
 {
-    assert( (index >= 0) && (index < CHIP8_MEMORY_SIZE) );
+    assert( index < CHIP8_MEMORY_SIZE );
 }
 
 void chipt8_memory_set(struct_chip8_memory_t* sys_memory, uint32_t index, uint8_t value)

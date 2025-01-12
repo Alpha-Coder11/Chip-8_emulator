@@ -4,10 +4,12 @@
 #include "config.h"
 #include "chip8_memory.h"
 #include "chip8_registers.h"
+#include "chip8_stack.h"
 
 typedef struct{
     struct_chip8_memory_t system_memory;
     struct_chip8_registers_t system_registers;
+    struct_chip8_stack_t system_stack;
 } struct_chip8_t;
 
 #endif
