@@ -3,6 +3,7 @@
 
 #include "config.h"
 #include "chip8_memory.h"
+#include "chip8_registers.h"
 
 typedef struct{
     struct_chip8_memory_t system_memory;
