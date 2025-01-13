@@ -5,12 +5,16 @@
 #include "chip8.h"
 
 #define UNUSED(x) (void)(x)
-
-struct_chip8_t chip8;
-
-
+const uint8_t keyboard[] =
+{
+    SDLK_1, SDLK_2, SDLK_3, SDLK_4,
+    SDLK_q, SDLK_w, SDLK_e, SDLK_r,
+    SDLK_a, SDLK_s, SDLK_d, SDLK_f,
+    SDLK_z, SDLK_x, SDLK_c, SDLK_v
+};
 int main(int argc, char** argv) 
 {
+    uint8_t key = 0xFF;
     UNUSED(argc);
     UNUSED(argv);
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -23,17 +27,43 @@ int main(int argc, char** argv)
         SDL_WINDOW_SHOWN
     );
 
+    struct_chip8_t chip8 = {0};
+ 
+
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_TEXTUREACCESS_TARGET);
     while(1)
     {
         SDL_Event event;
         while(SDL_PollEvent(&event))
         {
-            if(event.type == SDL_QUIT)
+
+            switch(event.type)
             {
-                SDL_DestroyWindow(window);
-                SDL_Quit();
-                return 0;
+                case SDL_KEYDOWN:
+                    key = event.key.keysym.sym;
+                    key = chip8_keyboard_map(keyboard, key); 
+                    printf("KEY Down: %d\n", key);
+                    if ( key != CHIP8_TOTAL_KEYS )
+                    {
+                        chip8_keyboard_key_down(&chip8.system_keyboard, key);
+                    }
+                    
+                break;
+                case SDL_KEYUP:
+                    key = event.key.keysym.sym;
+                    key = chip8_keyboard_map(keyboard, key); 
+                    printf("KEY Up: %d\n", key);
+                    if ( key != CHIP8_TOTAL_KEYS )
+                    {
+                        chip8_keyboard_key_up(&chip8.system_keyboard, key);
+                    }
+                break;
+                case SDL_QUIT:
+                    SDL_DestroyWindow(window);
+                    SDL_Quit();
+                    return 0;
+                break;
+
             }
         }
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
