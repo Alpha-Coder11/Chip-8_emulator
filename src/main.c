@@ -28,6 +28,7 @@ int main(int argc, char** argv)
     );
 
     struct_chip8_t chip8 = {0};
+    chip8_init(&chip8);
  
 
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_TEXTUREACCESS_TARGET);
