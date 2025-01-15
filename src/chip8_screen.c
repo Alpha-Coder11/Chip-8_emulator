@@ -33,6 +33,8 @@ uint8_t chip8_screen_draw_sprite(struct_chip8_screen_t* system_screen, uint8_t r
 {
     uint8_t pixel_collision = 0;
     uint8_t sprite_byte = 0;
+    uint8_t mod_row = 0;
+    uint8_t mod_coloumn = 0;
 
     for(uint8_t d_row = 0; d_row < num_of_bytes; d_row++)
     {
@@ -45,11 +47,16 @@ uint8_t chip8_screen_draw_sprite(struct_chip8_screen_t* system_screen, uint8_t r
             }
             else
             {   
-                system_screen->pixels[row + d_row][coloumn + d_coloumn] ^= 1;
+                mod_row = (row + d_row) % CHIP8_HEIGHT;
+                mod_coloumn = (coloumn + d_coloumn) % CHIP8_WIDTH;
+                if (system_screen->pixels[mod_row][mod_coloumn] == 1)
+                {
+                    pixel_collision = 1;
+                }
+                system_screen->pixels[mod_row][mod_coloumn] ^= 1;
             }
         }
     }
-
+    
     return pixel_collision;
-
 }
