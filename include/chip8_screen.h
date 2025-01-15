@@ -12,5 +12,6 @@ typedef struct
 void chip8_screen_set(struct_chip8_screen_t* system_screen, uint8_t row, uint8_t coloumn);
 uint8_t chip8_screen_is_pixel_set(struct_chip8_screen_t* system_screen, uint8_t row, uint8_t coloumn);
 void chip8_screen_clear(struct_chip8_screen_t* system_screen);
+uint8_t chip8_screen_draw_sprite(struct_chip8_screen_t* system_screen, uint8_t row, uint8_t coloumn, const uint8_t* sprite, uint8_t num_of_bytes);
 
 #endif

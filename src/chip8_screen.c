@@ -28,3 +28,28 @@ void chip8_screen_clear(struct_chip8_screen_t* system_screen)
         }
     }
 }
+
+uint8_t chip8_screen_draw_sprite(struct_chip8_screen_t* system_screen, uint8_t row, uint8_t coloumn, const uint8_t* sprite, uint8_t num_of_bytes)
+{
+    uint8_t pixel_collision = 0;
+    uint8_t sprite_byte = 0;
+
+    for(uint8_t d_row = 0; d_row < num_of_bytes; d_row++)
+    {
+        sprite_byte = sprite[d_row];
+        for(uint8_t d_coloumn = 0; d_coloumn < 8; d_coloumn++)
+        {
+            if( (sprite_byte & (0x80 >> d_coloumn)) == 0)
+            {
+                // do nothing
+            }
+            else
+            {   
+                system_screen->pixels[row + d_row][coloumn + d_coloumn] ^= 1;
+            }
+        }
+    }
+
+    return pixel_collision;
+
+}

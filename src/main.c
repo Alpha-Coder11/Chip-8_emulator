@@ -29,7 +29,8 @@ int main(int argc, char** argv)
 
     struct_chip8_t chip8 = {0};
     chip8_init(&chip8);
- 
+
+    chip8_screen_draw_sprite(&chip8.system_screen, 10, 10, &chip8.system_memory.memory[5], 5);
 
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_TEXTUREACCESS_TARGET);
     while(1)
@@ -70,12 +71,28 @@ int main(int argc, char** argv)
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-        SDL_Rect r;
-        r.x =0;
-        r.y =0;
-        r.w = 40;
-        r.h = 40;
-        SDL_RenderDrawRect(renderer, &r);
+
+        for(uint8_t row = 0; row < CHIP8_HEIGHT; row++)
+        {
+            for(uint8_t coloumn = 0; coloumn < CHIP8_WIDTH; coloumn++)
+            {
+                if ( chip8.system_screen.pixels[row][coloumn] == 1 )
+                {
+                    SDL_Rect r;
+                    r.x = coloumn * EMULATOR_WINDOW_SCALE;
+                    r.y = row * EMULATOR_WINDOW_SCALE;
+                    r.w = EMULATOR_WINDOW_SCALE;
+                    r.h = EMULATOR_WINDOW_SCALE;
+                    SDL_RenderFillRect(renderer, &r);
+                }
+            }
+        }
+        // SDL_Rect r;
+        // r.x =0;
+        // r.y =0;
+        // r.w = 40;
+        // r.h = 40;
+        // SDL_RenderDrawRect(renderer, &r);
         SDL_RenderPresent(renderer);
     }
     SDL_DestroyWindow(window);

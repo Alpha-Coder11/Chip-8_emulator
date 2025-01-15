@@ -5,7 +5,7 @@
 #include "config.h"
 
 typedef struct{
-    char memory[CHIP8_MEMORY_SIZE];
+    uint8_t memory[CHIP8_MEMORY_SIZE];
 } struct_chip8_memory_t;
 
 void chip8_memory_set(struct_chip8_memory_t* sys_memory, uint32_t index, uint8_t value);
