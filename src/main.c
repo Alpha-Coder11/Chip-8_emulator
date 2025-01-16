@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <windows.h>
 #include <SDL2/SDL.h>
 
 #include "config.h"
@@ -29,6 +30,8 @@ int main(int argc, char** argv)
 
     struct_chip8_t chip8 = {0};
     chip8_init(&chip8);
+    chip8.system_registers.delay_timer_reg = 255;
+    chip8.system_registers.sound_timer_reg = 30;
 
     chip8_screen_draw_sprite(&chip8.system_screen, 10, 10, &chip8.system_memory.memory[5], 5);
 
@@ -94,6 +97,18 @@ int main(int argc, char** argv)
         // r.h = 40;
         // SDL_RenderDrawRect(renderer, &r);
         SDL_RenderPresent(renderer);
+        if ( chip8.system_registers.delay_timer_reg > 0 )
+        {
+            Sleep(100);
+            chip8.system_registers.delay_timer_reg--;
+            printf("Delay Timer %d\n", chip8.system_registers.delay_timer_reg);
+        }
+        if ( chip8.system_registers.sound_timer_reg > 0 )
+        {
+            Beep(13000, 100 * chip8.system_registers.sound_timer_reg);
+            chip8.system_registers.sound_timer_reg = 0;
+            // printf("Delay Timer %d\n", chip8.system_registers.sound_timer_reg);
+        }
     }
     SDL_DestroyWindow(window);
     return 0;
