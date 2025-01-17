@@ -26,3 +26,10 @@ void chip8_init(struct_chip8_t* chip8)
     memset(chip8, 0, sizeof(struct_chip8_t) );
     memcpy(chip8->system_memory.memory, chip8_default_character_set, sizeof(chip8_default_character_set));
 }
+void chip8_load(struct_chip8_t* chip8, const uint8_t *buffer, size_t size)
+{
+    assert( (size + CHIP8_PROGRAM_LOAD_ADDR)  < CHIPT8_MEMORY_SIZE);
+    memcpy(&chip8->system_memory.memory[CHIP8_PROGRAM_LOAD_ADDR], buffer, size);
+    chip8->system_registers.pc = CHIP8_PROGRAM_LOAD_ADDR;
+}
+void chip8_exec(struct_chip8_t* chip8, uint16_t opcode);
