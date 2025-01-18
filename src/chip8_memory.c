@@ -17,3 +17,10 @@ uint8_t chip8_memory_get(struct_chip8_memory_t* sys_memory, uint32_t index)
     chip8_memory_in_bound(index);
     return sys_memory->memory[index];
 }
+uint16_t chip8_memmory_get_opcode(struct_chip8_memory_t* sys_memory, uint32_t index)
+{
+    chip8_memory_in_bound(index + 1);   // this will not workin if index is at last value
+    uint8_t msb = sys_memory->memory[index];
+    uint8_t lsb = sys_memory->memory[index + 1];
+    return (msb << 8) | lsb;
+}

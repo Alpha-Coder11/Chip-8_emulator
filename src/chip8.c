@@ -1,4 +1,5 @@
 #include <memory.h>
+#include <assert.h>
 #include "chip8.h"
 
 const uint8_t chip8_default_character_set[] =
@@ -28,8 +29,11 @@ void chip8_init(struct_chip8_t* chip8)
 }
 void chip8_load(struct_chip8_t* chip8, const uint8_t *buffer, size_t size)
 {
-    assert( (size + CHIP8_PROGRAM_LOAD_ADDR)  < CHIPT8_MEMORY_SIZE);
+    assert( (size + CHIP8_PROGRAM_LOAD_ADDR) < CHIP8_MEMORY_SIZE);
     memcpy(&chip8->system_memory.memory[CHIP8_PROGRAM_LOAD_ADDR], buffer, size);
-    chip8->system_registers.pc = CHIP8_PROGRAM_LOAD_ADDR;
+    chip8->system_registers.pc_reg = CHIP8_PROGRAM_LOAD_ADDR;
 }
-void chip8_exec(struct_chip8_t* chip8, uint16_t opcode);
+void chip8_exec(struct_chip8_t* chip8, uint16_t opcode)
+{
+
+}

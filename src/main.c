@@ -15,6 +15,37 @@ const uint8_t keyboard[] =
 };
 int main(int argc, char** argv) 
 {
+    uint8_t buffer[CHIP8_MEMORY_SIZE - CHIP8_PROGRAM_LOAD_ADDR] = {};
+
+    if ( argc < 2 )
+    {
+        printf("You must provide a ROM File\n");
+        return 0;
+    }
+    const char *filename = argv[1];
+    printf("The file to load is %s\n", filename);
+    FILE *ROM = fopen(filename, "rb");  // we use the mode rb instead of just r because we want the operating system to treat the file as binary
+    if (ROM == NULL)
+    {
+        printf("Error: Could not open file %s\n", filename);
+        return 0;
+    }
+    fseek(ROM, 0, SEEK_END);
+    uint32_t size = ftell(ROM);     // tells the position of the file pointer
+    fseek(ROM, 0 , SEEK_SET);       // sets the file pointer to the beginning of the file
+    uint32_t ret = fread(buffer, size, 1, ROM);
+    if ( ret != 1 ) 
+    {
+        fclose(ROM);
+        printf("Failed to read from file\n");
+        return 0;
+    }
+
+    struct_chip8_t chip8 = {0};
+    chip8_init(&chip8);
+    chip8_load(&chip8, buffer, size);
+
+
     uint8_t key = 0xFF;
     UNUSED(argc);
     UNUSED(argv);
@@ -28,8 +59,6 @@ int main(int argc, char** argv)
         SDL_WINDOW_SHOWN
     );
 
-    struct_chip8_t chip8 = {0};
-    chip8_init(&chip8);
     chip8.system_registers.delay_timer_reg = 255;
     chip8.system_registers.sound_timer_reg = 30;
 
@@ -105,11 +134,15 @@ int main(int argc, char** argv)
         }
         if ( chip8.system_registers.sound_timer_reg > 0 )
         {
-            Beep(13000, 100 * chip8.system_registers.sound_timer_reg);
-            chip8.system_registers.sound_timer_reg = 0;
+            // Beep(13000, 100 * chip8.system_registers.sound_timer_reg);
+            // chip8.system_registers.sound_timer_reg = 0;
             // printf("Delay Timer %d\n", chip8.system_registers.sound_timer_reg);
         }
-    }
+        uint16_t opcode = chip8_memmory_get_opcode(&chip8.system_memory, chip8.system_registers.pc_reg);
+        chip8_exec(&chip8, opcode);
+        chip8.system_registers.pc_reg += 2;
+        printf(" %d\n", opcode);
+    }   
     SDL_DestroyWindow(window);
     return 0;
 }
