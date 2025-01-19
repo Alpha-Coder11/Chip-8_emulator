@@ -20,6 +20,34 @@ typedef struct{
 
 void chip8_init(struct_chip8_t* chip8);
 void chip8_load(struct_chip8_t* chip8, const uint8_t *buffer, size_t size);
-void chip8_exec(struct_chip8_t* chip8, uint16_t opcode);
+void chip8_execute_opcode(struct_chip8_t* chip8, uint16_t opcode);
+
+#define CHIP8_CLS  0x00E0    ///< Clears the display
+#define CHIP8_RET  0x00EE    ///< Returns from a subroutine
+#define CHIP8_JP   0x1000    ///< Jumps to address NNN, format 0x1NNN
+#define CHIP8_CALL 0x2000    ///< Calls subroutine at NNN, format 0x2NNN
+#define CHIP8_SE   0x3000    ///< Skips the next instruction if VX equals NN, format 0x3XNN
+#define CHIP8_SNE  0x4000    ///< Skips the next instruction if VX doesn't equal NN, format 0x4XNN
+#define CHIP8_SE2  0x5000    ///< Skips the next instruction if VX equals VY, format 0x5XY0
+#define CHIP8_LD   0x6000    ///< Sets VX to NN, format 0x6XNN
+#define CHIP8_ADD  0x7000    ///< Adds NN to VX, format 0x7XNN
+#define CHIP8_LD2  0x8000    ///< Sets VX to the value of VY, format 0x8XY0
+#define CHIP8_SNE2 0x9000    ///< Skips the next instruction if VX doesn't equal VY, format 0x9XY0
+#define CHIP8_LD3  0xA000    ///< Sets Register I to the address NNN, format 0xANNN
+#define CHIP8_JP2  0xB000    ///< Jumps to the address location NNN plus V0, format 0xBNNN
+#define CHIP8_RND  0xC000    ///< Sets VX to the result of a bitwise AND operation on a random number and NN, format 0xCXNN
+#define CHIP8_DRW  0xD000    ///< Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels, format 0xDXYN
+#define CHIP8_SKP  0xE09E    ///< Skips the next instruction if the key stored in VX is pressed, format 0xEX9E
+#define CHIP8_SKNP 0xE0A1    ///< Skips the next instruction if the key stored in VX isn't pressed, format 0xEXA1
+#define CHIP8_LD4  0xF007    ///< Sets VX to the value of the delay timer, format 0xFX07
+#define CHIP8_LD5  0xF00A    ///< A key press is awaited, and then stored in VX, format 0xFX0A
+#define CHIP8_LD6  0xF015    ///< Sets the delay timer to VX, format 0xFX15
+#define CHIP8_LD7  0xF018    ///< Sets the sound timer to VX, format 0xFX18
+#define CHIP8_ADD2 0xF01E    ///< Adds VX to I, format 0xFX1E
+#define CHIP8_LD8  0xF029    ///< Sets I to the location of the sprite for the character in VX, format 0xFX29
+#define CHIP8_LD9  0xF033    ///< Stores the BCD representation of Vx in memory locations I, I+1, and I+2, format 0xFX33
+#define CHIP8_LD10 0xF055    ///< Stores V0 to VX in memory starting at address I, format 0xFX55 //TODO understand this
+#define CHIP8_LD11 0xF065    ///< Fills V0 to VX with values from memory starting at address I, format 0xFX65 //TODO understand this
+
 
 #endif

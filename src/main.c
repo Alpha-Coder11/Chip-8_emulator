@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 {
     uint8_t buffer[CHIP8_MEMORY_SIZE - CHIP8_PROGRAM_LOAD_ADDR] = {};
     uint16_t opcode = 0;
-    
+
     if ( argc < 2 )
     {
         printf("You must provide a ROM File\n");
@@ -133,7 +133,7 @@ int main(int argc, char** argv)
             chip8.system_registers.sound_timer_reg = 0;
         }
         opcode = chip8_memmory_get_opcode(&chip8.system_memory, chip8.system_registers.pc_reg);
-        chip8_exec(&chip8, opcode);
+        chip8_execute_opcode(&chip8, opcode);
         chip8.system_registers.pc_reg += 2;
     }   
     SDL_DestroyWindow(window);

@@ -33,7 +33,25 @@ void chip8_load(struct_chip8_t* chip8, const uint8_t *buffer, size_t size)
     memcpy(&chip8->system_memory.memory[CHIP8_PROGRAM_LOAD_ADDR], buffer, size);
     chip8->system_registers.pc_reg = CHIP8_PROGRAM_LOAD_ADDR;
 }
-void chip8_exec(struct_chip8_t* chip8, uint16_t opcode)
+void chip8_execute_opcode(struct_chip8_t* chip8, uint16_t opcode)
 {
+    switch(opcode)
+    {
+        /*
+        * Clear the display.
+        */
+        case CHIP8_CLS:
+            chip8_screen_clear(&(chip8->system_screen));
+        break;
 
+        /*
+        * The interpreter sets the program counter to the address at the top of the stack, then subtracts 1 from the stack pointer.
+        */
+        case CHIP8_RET:
+            chip8->system_registers.pc_reg = chip8_stack_pop(&chip8->system_stack, &chip8->system_registers.stack_pointer_reg);
+        break;
+
+
+        
+    }
 }
