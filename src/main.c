@@ -16,7 +16,8 @@ const uint8_t keyboard[] =
 int main(int argc, char** argv) 
 {
     uint8_t buffer[CHIP8_MEMORY_SIZE - CHIP8_PROGRAM_LOAD_ADDR] = {};
-
+    uint16_t opcode = 0;
+    
     if ( argc < 2 )
     {
         printf("You must provide a ROM File\n");
@@ -59,8 +60,8 @@ int main(int argc, char** argv)
         SDL_WINDOW_SHOWN
     );
 
-    chip8.system_registers.delay_timer_reg = 255;
-    chip8.system_registers.sound_timer_reg = 30;
+    chip8.system_registers.delay_timer_reg = 0;
+    chip8.system_registers.sound_timer_reg = 0;
 
     chip8_screen_draw_sprite(&chip8.system_screen, 10, 10, &chip8.system_memory.memory[5], 5);
 
@@ -119,29 +120,21 @@ int main(int argc, char** argv)
                 }
             }
         }
-        // SDL_Rect r;
-        // r.x =0;
-        // r.y =0;
-        // r.w = 40;
-        // r.h = 40;
-        // SDL_RenderDrawRect(renderer, &r);
+
         SDL_RenderPresent(renderer);
         if ( chip8.system_registers.delay_timer_reg > 0 )
         {
             Sleep(100);
             chip8.system_registers.delay_timer_reg--;
-            printf("Delay Timer %d\n", chip8.system_registers.delay_timer_reg);
         }
         if ( chip8.system_registers.sound_timer_reg > 0 )
         {
-            // Beep(13000, 100 * chip8.system_registers.sound_timer_reg);
-            // chip8.system_registers.sound_timer_reg = 0;
-            // printf("Delay Timer %d\n", chip8.system_registers.sound_timer_reg);
+            Beep(13000, 100 * chip8.system_registers.sound_timer_reg);
+            chip8.system_registers.sound_timer_reg = 0;
         }
-        uint16_t opcode = chip8_memmory_get_opcode(&chip8.system_memory, chip8.system_registers.pc_reg);
+        opcode = chip8_memmory_get_opcode(&chip8.system_memory, chip8.system_registers.pc_reg);
         chip8_exec(&chip8, opcode);
         chip8.system_registers.pc_reg += 2;
-        printf(" %d\n", opcode);
     }   
     SDL_DestroyWindow(window);
     return 0;
