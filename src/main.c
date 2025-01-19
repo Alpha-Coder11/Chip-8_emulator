@@ -133,8 +133,8 @@ int main(int argc, char** argv)
             chip8.system_registers.sound_timer_reg = 0;
         }
         opcode = chip8_memmory_get_opcode(&chip8.system_memory, chip8.system_registers.pc_reg);
-        chip8_execute_opcode(&chip8, opcode);
         chip8.system_registers.pc_reg += 2;
+        chip8_execute_opcode(&chip8, opcode);
     }   
     SDL_DestroyWindow(window);
     return 0;
