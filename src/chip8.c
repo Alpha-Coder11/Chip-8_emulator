@@ -95,6 +95,47 @@ static void chip8_execute_command_8000(struct_chip8_t* chip8, uint16_t opcode)
     }
 }
 
+chip8_execute_command_E000(struct_chip8_t* chip8, uint16_t opcode)
+{
+    uint16_t instruction = GET_INSTRUCTION_E(opcode);
+    switch (instruction)
+    {
+        case CHIP8_SKP: 
+        break;
+
+        case CHIP8_SKNP: 
+        break;
+
+    }
+}
+
+chip8_execute_command_F000(struct_chip8_t* chip8, uint16_t opcode)
+{
+    uint16_t instruction = GET_INSTRUCTION_F(opcode);
+    switch (instruction)
+    {
+        case CHIP8_LD4 :
+        break;
+        case CHIP8_LD5 :
+        break;
+        
+        case CHIP8_LD6 :
+        break;
+        case CHIP8_LD7 :
+        break;
+        case CHIP8_ADD3:
+        break;
+        case CHIP8_LD8 :
+        break;
+        case CHIP8_LD9 :
+        break;
+        case CHIP8_LD10:
+        break;
+        case CHIP8_LD11:
+        break;
+    }
+}
+
 static void chip8_extended_command(struct_chip8_t* chip8, uint16_t opcode)
 {
     uint16_t instruction = GET_INSTRUCTION(opcode);
@@ -197,6 +238,13 @@ static void chip8_extended_command(struct_chip8_t* chip8, uint16_t opcode)
             const uint8_t* sprite = (const uint8_t* )&chip8->system_memory.memory[chip8->system_registers.i_reg];
             chip8->system_registers.v_reg[0x0F] = chip8_screen_draw_sprite(&chip8->system_screen, chip8->system_registers.v_reg[GET_Y_VALUE(opcode)], chip8->system_registers.v_reg[GET_X_VALUE(opcode)], sprite, GET_N_VALUE(opcode));
         }
+
+        case CHIP8_E: 
+            chip8_execute_command_E000(chip8, opcode);
+        break;
+
+        case CHIP8_F: 
+            chip8_execute_command_F000(chip8, opcode);
         break;
 
 

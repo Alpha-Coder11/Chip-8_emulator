@@ -45,8 +45,12 @@ void chip8_execute_opcode(struct_chip8_t* chip8, uint16_t opcode);
 #define CHIP8_JP2  0xB000    ///< Jumps to the address location NNN plus V0, format 0xBNNN
 #define CHIP8_RND  0xC000    ///< Sets VX to the result of a bitwise AND operation on a random number and NN, format 0xCXNN
 #define CHIP8_DRW  0xD000    ///< Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels, format 0xDXYN
+
+#define CHIP8_E   0xE000
 #define CHIP8_SKP  0xE09E    ///< Skips the next instruction if the key stored in VX is pressed, format 0xEX9E
 #define CHIP8_SKNP 0xE0A1    ///< Skips the next instruction if the key stored in VX isn't pressed, format 0xEXA1
+
+#define CHIP8_F    0xF000
 #define CHIP8_LD4  0xF007    ///< Sets VX to the value of the delay timer, format 0xFX07
 #define CHIP8_LD5  0xF00A    ///< A key press is awaited, and then stored in VX, format 0xFX0A
 #define CHIP8_LD6  0xF015    ///< Sets the delay timer to VX, format 0xFX15
@@ -59,10 +63,13 @@ void chip8_execute_opcode(struct_chip8_t* chip8, uint16_t opcode);
 
 #define GET_INSTRUCTION(opcode)      (opcode & 0xf000)
 #define GET_INSTRUCTION_8(opcode)    (opcode & 0xf00f)
+#define GET_INSTRUCTION_E(opcode)    (opcode & 0xF0FF)
+#define GET_INSTRUCTION_F(opcode)    (opcode & 0xF0FF)
 #define GET_PROGRAM_COUNTER(opcode)  (opcode & 0x0FFF)
 #define GET_X_VALUE(opcode)          ((opcode >> 8) & 0x000F)
 #define GET_Y_VALUE(opcode)          ((opcode >> 4) & 0x000F)
 #define GET_KK_VALUE(opcode)         ( opcode & 0x00FF)
 #define GET_NNN_VALUE(opcode)        (opcode & 0x0FFF)
 #define GET_N_VALUE(opcode)          (opcode & 0x000F)
+
 #endif
