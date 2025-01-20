@@ -57,10 +57,12 @@ void chip8_execute_opcode(struct_chip8_t* chip8, uint16_t opcode);
 #define CHIP8_LD10 0xF055    ///< Stores V0 to VX in memory starting at address I, format 0xFX55 //TODO understand this
 #define CHIP8_LD11 0xF065    ///< Fills V0 to VX with values from memory starting at address I, format 0xFX65 //TODO understand this
 
-#define GET_INSTRUCTION(opcode) (opcode & 0xf000)
-#define GET_INSTRUCTION_8(opcode) (opcode & 0xf00f)
-#define GET_PROGRAM_COUNTER(opcode) (opcode & 0x0FFF)
-#define GET_X_VALUE(opcode) ((opcode >> 8) & 0x000F)
-#define GET_Y_VALUE(opcode) ((opcode >> 4) & 0x000F)
-#define GET_KK_VALUE(opcode) ( opcode & 0x00FF)
+#define GET_INSTRUCTION(opcode)      (opcode & 0xf000)
+#define GET_INSTRUCTION_8(opcode)    (opcode & 0xf00f)
+#define GET_PROGRAM_COUNTER(opcode)  (opcode & 0x0FFF)
+#define GET_X_VALUE(opcode)          ((opcode >> 8) & 0x000F)
+#define GET_Y_VALUE(opcode)          ((opcode >> 4) & 0x000F)
+#define GET_KK_VALUE(opcode)         ( opcode & 0x00FF)
+#define GET_NNN_VALUE(opcode)        (opcode & 0x0FFF)
+#define GET_N_VALUE(opcode)          (opcode & 0x000F)
 #endif

@@ -1,5 +1,8 @@
 #include <memory.h>
 #include <assert.h>
+#include <stdlib.h>
+#include <time.h>
+
 #include "chip8.h"
 
 const uint8_t chip8_default_character_set[] =
@@ -169,15 +172,31 @@ static void chip8_extended_command(struct_chip8_t* chip8, uint16_t opcode)
             chip8_execute_command_8000(chip8, opcode);
         break;
 
+        // skips next instruction if Vx!=Vy
         case CHIP8_SNE2:
+            if( chip8->system_registers.v_reg[GET_X_VALUE(opcode)] != chip8->system_registers.v_reg[GET_Y_VALUE(opcode)])
+            {
+                chip8->system_registers.pc_reg += 2;
+            }
         break;
         case CHIP8_LD3 :
+            chip8->system_registers.i_reg = GET_NNN_VALUE(opcode);
         break;
+
         case CHIP8_JP2:
+            chip8->system_registers.pc_reg =  GET_NNN_VALUE(opcode) + chip8->system_registers.v_reg[0x00];
         break;
+
         case CHIP8_RND:
+            srand(clock());
+             chip8->system_registers.v_reg[GET_X_VALUE(opcode)] = GET_KK_VALUE(opcode) & (rand() % 255);
         break;
+
         case CHIP8_DRW:
+        {  
+            const uint8_t* sprite = (const uint8_t* )&chip8->system_memory.memory[chip8->system_registers.i_reg];
+            chip8->system_registers.v_reg[0x0F] = chip8_screen_draw_sprite(&chip8->system_screen, chip8->system_registers.v_reg[GET_Y_VALUE(opcode)], chip8->system_registers.v_reg[GET_X_VALUE(opcode)], sprite, GET_N_VALUE(opcode));
+        }
         break;
 
 
