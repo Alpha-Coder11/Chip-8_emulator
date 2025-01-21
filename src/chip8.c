@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <time.h>
+#include "SDL2/SDL.h"
 
 #include "chip8.h"
 
@@ -95,43 +96,108 @@ static void chip8_execute_command_8000(struct_chip8_t* chip8, uint16_t opcode)
     }
 }
 
-chip8_execute_command_E000(struct_chip8_t* chip8, uint16_t opcode)
+void chip8_execute_command_E000(struct_chip8_t* chip8, uint16_t opcode)
 {
     uint16_t instruction = GET_INSTRUCTION_E(opcode);
     switch (instruction)
     {
         case CHIP8_SKP: 
+            if( chip8_keyboard_is_key_down(&chip8->system_keyboard, chip8->system_registers.v_reg[GET_X_VALUE(opcode)]) )
+            {
+                chip8->system_registers.pc_reg += 2;
+            }
         break;
 
         case CHIP8_SKNP: 
+            if( !chip8_keyboard_is_key_down(&chip8->system_keyboard, chip8->system_registers.v_reg[GET_X_VALUE(opcode)]) )
+            {
+                chip8->system_registers.pc_reg += 2;
+            }
         break;
 
     }
 }
+static uint8_t chip8_wait_for_key_press(struct_chip8_t* chip8)
+{
+    SDL_Event event;
+    while(SDL_WaitEvent(&event))
+    {
+        if ( event.type != SDL_KEYDOWN )
+        {
+            // do nothing
+        }
+        else
+        {
+            uint8_t key = event.key.keysym.sym;
+            uint8_t chip8_key = chip8_keyboard_map(&chip8->system_keyboard, key);
+            if(chip8_key != CHIP8_TOTAL_KEYS)
+            {
+                return chip8_key;
+            }
+        }
+    }
+    return CHIP8_TOTAL_KEYS;
+}
 
-chip8_execute_command_F000(struct_chip8_t* chip8, uint16_t opcode)
+void chip8_execute_command_F000(struct_chip8_t* chip8, uint16_t opcode)
 {
     uint16_t instruction = GET_INSTRUCTION_F(opcode);
     switch (instruction)
     {
         case CHIP8_LD4 :
+            chip8->system_registers.v_reg[GET_X_VALUE(opcode)] = chip8->system_registers.delay_timer_reg;
         break;
+
         case CHIP8_LD5 :
+        {
+            uint8_t pressed_key = chip8_wait_for_key_press(chip8);
+            chip8->system_registers.v_reg[GET_X_VALUE(opcode)] = pressed_key;
+        }
         break;
         
         case CHIP8_LD6 :
+            chip8->system_registers.delay_timer_reg = chip8->system_registers.v_reg[GET_X_VALUE(opcode)];
+
         break;
         case CHIP8_LD7 :
+            chip8->system_registers.sound_timer_reg = chip8->system_registers.v_reg[GET_X_VALUE(opcode)];
         break;
         case CHIP8_ADD3:
+            chip8->system_registers.i_reg += chip8->system_registers.v_reg[GET_X_VALUE(opcode)];
         break;
         case CHIP8_LD8 :
+            chip8->system_registers.i_reg = chip8->system_registers.v_reg[GET_X_VALUE(opcode)] * CHIP8_HRIGHT_OF_SPRITE;
         break;
         case CHIP8_LD9 :
+        {
+
+            uint8_t hundreth = chip8->system_registers.v_reg[GET_X_VALUE(opcode)] % 100;
+            uint8_t tenths =  (chip8->system_registers.v_reg[GET_X_VALUE(opcode)] /10) % 10; 
+            uint8_t unit = chip8->system_registers.v_reg[GET_X_VALUE(opcode)] % 10; 
+
+            chip8_memory_set(&chip8->system_memory, chip8->system_registers.i_reg, hundreth);
+            chip8_memory_set(&chip8->system_memory, chip8->system_registers.i_reg + 1, tenths);
+            chip8_memory_set(&chip8->system_memory, chip8->system_registers.i_reg + 2, unit);
+        }
         break;
         case CHIP8_LD10:
+        {
+
+            for(uint8_t index = 0; index < GET_X_VALUE(opcode); index++)
+            {
+                chip8_memory_set(&chip8->system_memory, chip8->system_registers.i_reg + index, chip8->system_registers.v_reg[index]);
+            }
+        }
         break;
         case CHIP8_LD11:
+        {
+
+            for(uint8_t index = 0; index < GET_X_VALUE(opcode); index++)
+            {
+                chip8->system_registers.v_reg[index] = chip8_memory_get(&chip8->system_memory, chip8->system_registers.i_reg + index);
+            }
+        }
+
         break;
     }
 }

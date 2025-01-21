@@ -45,6 +45,7 @@ int main(int argc, char** argv)
     struct_chip8_t chip8 = {0};
     chip8_init(&chip8);
     chip8_load(&chip8, buffer, size);
+    chip8_keybaord_set_map(&chip8.system_keyboard, keyboard);
 
 
     uint8_t key = 0xFF;
@@ -76,7 +77,7 @@ int main(int argc, char** argv)
             {
                 case SDL_KEYDOWN:
                     key = event.key.keysym.sym;
-                    key = chip8_keyboard_map(keyboard, key); 
+                    key = chip8_keyboard_map(&chip8.system_keyboard, key); 
                     printf("KEY Down: %d\n", key);
                     if ( key != CHIP8_TOTAL_KEYS )
                     {
@@ -86,7 +87,7 @@ int main(int argc, char** argv)
                 break;
                 case SDL_KEYUP:
                     key = event.key.keysym.sym;
-                    key = chip8_keyboard_map(keyboard, key); 
+                    key = chip8_keyboard_map(&chip8.system_keyboard, key); 
                     printf("KEY Up: %d\n", key);
                     if ( key != CHIP8_TOTAL_KEYS )
                     {
