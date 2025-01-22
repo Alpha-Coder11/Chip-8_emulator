@@ -1,4 +1,6 @@
 #include <assert.h>
+#include <memory.h>
+
 #include "chip8_screen.h"
 
 static void chip8_screen_check_bounds(uint8_t row, uint8_t coloumn)
@@ -20,13 +22,14 @@ uint8_t chip8_screen_is_pixel_set(struct_chip8_screen_t* system_screen, uint8_t 
 
 void chip8_screen_clear(struct_chip8_screen_t* system_screen)
 {
-    for(uint8_t row = 0; row < CHIP8_HEIGHT; row++)
-    {
-        for(uint8_t coloumn = 0; coloumn < CHIP8_WIDTH; coloumn++)
-        {
-            system_screen->pixels[row][coloumn] = 0;
-        }
-    }
+    // for(uint8_t row = 0; row < CHIP8_HEIGHT; row++)
+    // {
+    //     for(uint8_t coloumn = 0; coloumn < CHIP8_WIDTH; coloumn++)
+    //     {
+    //         system_screen->pixels[row][coloumn] = 0;
+    //     }
+    // }
+    memset(system_screen->pixels, 0, sizeof(system_screen->pixels));
 }
 
 uint8_t chip8_screen_draw_sprite(struct_chip8_screen_t* system_screen, uint8_t row, uint8_t coloumn, const uint8_t* sprite, uint8_t num_of_bytes)

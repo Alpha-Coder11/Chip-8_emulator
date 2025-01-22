@@ -296,7 +296,7 @@ static void chip8_extended_command(struct_chip8_t* chip8, uint16_t opcode)
 
         case CHIP8_RND:
             srand(clock());
-             chip8->system_registers.v_reg[GET_X_VALUE(opcode)] = GET_KK_VALUE(opcode) & (rand() % 255);
+             chip8->system_registers.v_reg[GET_X_VALUE(opcode)] = (rand() % 255) & GET_KK_VALUE(opcode);
         break;
 
         case CHIP8_DRW:
@@ -312,11 +312,7 @@ static void chip8_extended_command(struct_chip8_t* chip8, uint16_t opcode)
         case CHIP8_F: 
             chip8_execute_command_F000(chip8, opcode);
         break;
-
-
     }
-
-
 }
 
 void chip8_init(struct_chip8_t* chip8)
@@ -338,7 +334,7 @@ void chip8_execute_opcode(struct_chip8_t* chip8, uint16_t opcode)
         * Clear the display.
         */
         case CHIP8_CLS:
-            chip8_screen_clear(&(chip8->system_screen));
+            chip8_screen_clear(&chip8->system_screen);
         break;
 
         /*
@@ -350,8 +346,6 @@ void chip8_execute_opcode(struct_chip8_t* chip8, uint16_t opcode)
 
         default:
             chip8_extended_command(chip8, opcode);
-        break;
-
-        
+        break;        
     }
 }

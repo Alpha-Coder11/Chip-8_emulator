@@ -64,8 +64,6 @@ int main(int argc, char** argv)
     chip8.system_registers.delay_timer_reg = 0;
     chip8.system_registers.sound_timer_reg = 0;
 
-    chip8_screen_draw_sprite(&chip8.system_screen, 10, 10, &chip8.system_memory.memory[5], 5);
-
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_TEXTUREACCESS_TARGET);
     while(1)
     {
@@ -125,12 +123,12 @@ int main(int argc, char** argv)
         SDL_RenderPresent(renderer);
         if ( chip8.system_registers.delay_timer_reg > 0 )
         {
-            Sleep(100);
+            Sleep(1);
             chip8.system_registers.delay_timer_reg--;
         }
         if ( chip8.system_registers.sound_timer_reg > 0 )
         {
-            Beep(13000, 100 * chip8.system_registers.sound_timer_reg);
+            Beep(13000, 10 * chip8.system_registers.sound_timer_reg);
             chip8.system_registers.sound_timer_reg = 0;
         }
         opcode = chip8_memmory_get_opcode(&chip8.system_memory, chip8.system_registers.pc_reg);
