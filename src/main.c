@@ -5,7 +5,6 @@
 #include "config.h"
 #include "chip8.h"
 
-#define UNUSED(x) (void)(x)
 const uint8_t keyboard[] =
 {
     SDLK_1, SDLK_2, SDLK_3, SDLK_4,
@@ -13,6 +12,7 @@ const uint8_t keyboard[] =
     SDLK_a, SDLK_s, SDLK_d, SDLK_f,
     SDLK_z, SDLK_x, SDLK_c, SDLK_v
 };
+
 int main(int argc, char** argv) 
 {
     uint8_t buffer[CHIP8_MEMORY_SIZE - CHIP8_PROGRAM_LOAD_ADDR] = {};
@@ -49,8 +49,7 @@ int main(int argc, char** argv)
 
 
     uint8_t key = 0xFF;
-    UNUSED(argc);
-    UNUSED(argv);
+
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_Window* window = SDL_CreateWindow(
         EMULATOR_WINDOW_TITLE,
@@ -70,28 +69,27 @@ int main(int argc, char** argv)
         SDL_Event event;
         while(SDL_PollEvent(&event))
         {
-
             switch(event.type)
             {
                 case SDL_KEYDOWN:
                     key = event.key.keysym.sym;
                     key = chip8_keyboard_map(&chip8.system_keyboard, key); 
-                    printf("KEY Down: %d\n", key);
                     if ( key != CHIP8_TOTAL_KEYS )
                     {
                         chip8_keyboard_key_down(&chip8.system_keyboard, key);
                     }
                     
                 break;
+
                 case SDL_KEYUP:
                     key = event.key.keysym.sym;
                     key = chip8_keyboard_map(&chip8.system_keyboard, key); 
-                    printf("KEY Up: %d\n", key);
                     if ( key != CHIP8_TOTAL_KEYS )
                     {
                         chip8_keyboard_key_up(&chip8.system_keyboard, key);
                     }
                 break;
+                
                 case SDL_QUIT:
                     SDL_DestroyWindow(window);
                     SDL_Quit();
@@ -132,7 +130,7 @@ int main(int argc, char** argv)
             chip8.system_registers.sound_timer_reg = 0;
         }
         opcode = chip8_memmory_get_opcode(&chip8.system_memory, chip8.system_registers.pc_reg);
-        chip8.system_registers.pc_reg += 2;
+        chip8.system_registers.pc_reg += CHIP8_SIZE_OF_INSTRUCTION;
         chip8_execute_opcode(&chip8, opcode);
     }   
     SDL_DestroyWindow(window);

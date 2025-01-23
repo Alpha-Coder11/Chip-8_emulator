@@ -10,6 +10,8 @@
 #include "chip8_keyboard.h"
 #include "chip8_screen.h"
 
+#define UNUSED(x) (void)(x)
+
 typedef struct{
     struct_chip8_memory_t system_memory;
     struct_chip8_registers_t system_registers;
