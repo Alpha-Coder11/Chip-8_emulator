@@ -183,7 +183,7 @@ void chip8_execute_command_F000(struct_chip8_t* chip8, uint16_t opcode)
         case CHIP8_LD10:
         {
 
-            for(uint8_t index = 0; index < GET_X_VALUE(opcode); index++)
+            for(uint8_t index = 0; index <= GET_X_VALUE(opcode); index++)
             {
                 chip8_memory_set(&chip8->system_memory, chip8->system_registers.i_reg + index, chip8->system_registers.v_reg[index]);
             }
