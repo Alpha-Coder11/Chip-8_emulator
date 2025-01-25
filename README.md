@@ -89,6 +89,6 @@ Refer to [Cowgod's Chip-8 Technical Reference](http://devernay.free.fr/hacks/chi
 Contributions are welcome! Feel free to fork the repository, submit issues, or create pull requests. 
 
 ### Notes to Self
-- Two things I learned while building this project, one is forward declaration and the other is memset on 2D array 
+- Two things I learned while building this project, one is forward declaration and the other is memset on 2D array. Current problem is invaders is not working properly with thi emulator version.
 
 
