@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <windows.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_timer.h>
 
 #include "config.h"
 #include "chip8.h"
@@ -121,12 +121,13 @@ int main(int argc, char** argv)
         SDL_RenderPresent(renderer);
         if ( chip8.system_registers.delay_timer_reg > 0 )
         {
-            Sleep(1);
+            SDL_Delay(1);
             chip8.system_registers.delay_timer_reg--;
         }
         if ( chip8.system_registers.sound_timer_reg > 0 )
         {
-            Beep(13000, 10 * chip8.system_registers.sound_timer_reg);
+            //TODO find the beeper alternative for linux
+            // Beep(13000, 10 * chip8.system_registers.sound_timer_reg);
             chip8.system_registers.sound_timer_reg = 0;
         }
         opcode = chip8_memmory_get_opcode(&chip8.system_memory, chip8.system_registers.pc_reg);
