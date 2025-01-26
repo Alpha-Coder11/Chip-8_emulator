@@ -401,6 +401,7 @@ static void chip8_extended_command(struct_chip8_t* chip8, uint16_t opcode)
             const uint8_t* sprite = (const uint8_t* )&chip8->system_memory.memory[chip8->system_registers.i_reg];
             chip8->system_registers.v_reg[0x0F] = chip8_screen_draw_sprite(&chip8->system_screen, chip8->system_registers.v_reg[GET_Y_VALUE(opcode)], chip8->system_registers.v_reg[GET_X_VALUE(opcode)], sprite, GET_N_VALUE(opcode));
         }
+        break;
 
         /*
         * Handles the opcodes starting with E000.
