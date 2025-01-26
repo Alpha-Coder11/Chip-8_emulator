@@ -1,22 +1,21 @@
-UNAME := $(shell uname)
+# UNAME := $(shell uname)
+UNAME = Windows
 
 INCLUDES= -I ./include 
 
 ifeq ($(UNAME), Linux)
 INCLUDES+= -I ./usr/include/SDL2
 endif
-
 ifeq ($(UNAME), Windows)
 LIBRARIES= -L ./lib
 endif
 
-FLAGS= -Wall -Wextra -Wno-error -g
-MINGW32= -lSDL2main -lSDL2
-
 ifeq ($(UNAME), Windows)
-MINGW32+= -lmingw32
+MINGW32= -lmingw32
 endif
+MINGW32+= -lSDL2main -lSDL2
 
+FLAGS= -Wall -Wextra -Wno-error -g
 OBJECTS= ./build/chip8_memory.o ./build/chip8_stack.o ./build/chip8_keyboard.o ./build/chip8.o ./build/chip8_screen.o
 BUILD_DIR= build
 TARGET = bin/main
@@ -48,6 +47,7 @@ ${BUILD_DIR}:
 
 run: all
 	./$(TARGET) $(ROM)
+
 clean: 
 ifeq ($(UNAME), Linux)
 	rm build/*.o
