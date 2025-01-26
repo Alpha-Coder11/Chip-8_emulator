@@ -121,7 +121,7 @@ int main(int argc, char** argv)
         SDL_RenderPresent(renderer);
         if ( chip8.system_registers.delay_timer_reg > 0 )
         {
-            SDL_Delay(1);
+            SDL_Delay(10);
             chip8.system_registers.delay_timer_reg--;
         }
         if ( chip8.system_registers.sound_timer_reg > 0 )
@@ -130,9 +130,12 @@ int main(int argc, char** argv)
             // Beep(13000, 10 * chip8.system_registers.sound_timer_reg);
             chip8.system_registers.sound_timer_reg = 0;
         }
-        opcode = chip8_memmory_get_opcode(&chip8.system_memory, chip8.system_registers.pc_reg);
-        chip8.system_registers.pc_reg += CHIP8_SIZE_OF_INSTRUCTION;
-        chip8_execute_opcode(&chip8, opcode);
+        for (uint32_t instructions_per_step=0; instructions_per_step<10; instructions_per_step++)
+        {
+            opcode = chip8_memmory_get_opcode(&chip8.system_memory, chip8.system_registers.pc_reg);
+            chip8.system_registers.pc_reg += CHIP8_SIZE_OF_INSTRUCTION;
+            chip8_execute_opcode(&chip8, opcode);
+        }
     }   
     SDL_DestroyWindow(window);
     return 0;
