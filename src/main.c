@@ -121,7 +121,7 @@ int main(int argc, char** argv)
         SDL_RenderPresent(renderer);
         if ( chip8.system_registers.delay_timer_reg > 0 )
         {
-            SDL_Delay(10);
+            SDL_Delay(100);
             chip8.system_registers.delay_timer_reg--;
         }
         if ( chip8.system_registers.sound_timer_reg > 0 )

@@ -83,7 +83,7 @@ static void chip8_execute_command_8000(struct_chip8_t* chip8, uint16_t opcode)
         * Subtract VY from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
         */
         case CHIP8_SUB:
-            if ( chip8->system_registers.v_reg[GET_X_VALUE(opcode)] > chip8->system_registers.v_reg[GET_Y_VALUE(opcode)] )
+            if ( chip8->system_registers.v_reg[GET_X_VALUE(opcode)] >= chip8->system_registers.v_reg[GET_Y_VALUE(opcode)] )
             {
                 chip8->system_registers.v_reg[GET_X_VALUE(opcode)] = chip8->system_registers.v_reg[GET_X_VALUE(opcode)] - chip8->system_registers.v_reg[GET_Y_VALUE(opcode)];
                 chip8->system_registers.v_reg[0x0F] = 1;
@@ -107,7 +107,7 @@ static void chip8_execute_command_8000(struct_chip8_t* chip8, uint16_t opcode)
         * If Vy > Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from Vy, and the results stored in Vx.
         */
         case CHIP8_SUBN:
-            chip8->system_registers.v_reg[0x0F] = chip8->system_registers.v_reg[GET_Y_VALUE(opcode)] > chip8->system_registers.v_reg[GET_X_VALUE(opcode)]; 
+            chip8->system_registers.v_reg[0x0F] = chip8->system_registers.v_reg[GET_Y_VALUE(opcode)] >= chip8->system_registers.v_reg[GET_X_VALUE(opcode)]; 
             chip8->system_registers.v_reg[GET_X_VALUE(opcode)] = chip8->system_registers.v_reg[GET_Y_VALUE(opcode)] - chip8->system_registers.v_reg[GET_X_VALUE(opcode)];
                 
         break;
