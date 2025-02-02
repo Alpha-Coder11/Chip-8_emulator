@@ -23,6 +23,7 @@ This emulator replicates the behavior of the Chip8 system, allowing you to load 
 - MinGW 32-GCC-G++ version 6.3.0-1
 - Make
 - SDL2 (Simple DirectMedia Layer) library for graphics and input handling.
+> For Windows, we used 
 - ![alt text](images/mingw32.png)
 
 ### Installation
@@ -45,6 +46,8 @@ This emulator replicates the behavior of the Chip8 system, allowing you to load 
    
    ![alt text](images/build.png)
 
+   For Linux, we need to install sdl separately, and after that, we just type <b> make</b>
+
 4. Download the ROM File 
 
     Go to [Zophar's Domain](https://www.zophar.net/pdroms/chip8/chip-8-games-pack.html)
@@ -56,11 +59,11 @@ This emulator replicates the behavior of the Chip8 system, allowing you to load 
    ```bash
    Navigate to bin folder
    ```
-   Type main.exe INVADERS
+   Type main.exe INVADERS shift load
    ![alt text](images/Invader_Screen.png)
 
    Alternatively, you can stay in the root folder and use <b>mingw32-make run</b>. It will build the code and run the INVADER automatically. If you want to change the game you want to play,
-   you can just change the game in the bin directory and update <b>ROM</b> variable.
+   you can just change the game in the bin directory and update <b>ROM</b> variable. <b>shift </b> and <b> load </b> are flags which enable the quirks in the interpreter, more detail on them is mentioned below.
 
 ## Usage
 
@@ -83,6 +86,37 @@ This emulator supports the entire Chip8 instruction set, including:
 - Display and input handling
 
 Refer to [Cowgod's Chip-8 Technical Reference](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM) for detailed information about the instruction set.
+
+Flags: 
+* shift - enable shift_quirk 
+* load  - enable load_quirk
+
+## Load_quirk and Shift_quirk
+
+### Explanation of the flags
+
+Load/Store quirks - Instructions 0xFX55 and 0xFX65 increments value of Index register but some CHIP-8 programs assume that they don't. Enabling this quirk causes I register to become unchanged after the instruction.
+
+Shift quirks - Shift instructions 0x8XY6 and 0x8XYE originally shift register VY and store results in register VX. Some CHIP-8 programs incorrectly assume that the VX register is shifted by this instruction, and VY remains unmodified. Enabling this quirk causes VX to become shifted and VY remain untouched.
+
+
+Refer to [Yet Another CHIP-8 Emulator](https://blog.khutchins.com/posts/chip-8-emulation/) and [Chromatophore-HP48](https://github.com/Chromatophore/HP48-Superchip/tree/master/investigations) for detailed information about the quirks.
+### List of games needing those flags
+
+Enabling ***load_quirk*** is recommended for:
+* Astro Dodge [Revival Studios, 2008]
+* Tic-Tac-Toe [David Winter]
+* Stars [Sergey Naydenov, 2010]
+* Connect 4 [David Winter]
+* Hidden [David Winter, 1996]
+
+Enabling ***shift_quirk*** is recommended for:
+* BMP Viewer - Hello (C8 example) [Hap, 2005]
+* Space Invaders [David Winter]
+* Keypad Test [Hap, 2006]
+
+Enabling both ***shift_quirk*** AND ***load_quirk*** is recommended for:
+* Blinky [Hans Christian Egeberg, 1991]
 
 ## Contributing
 

@@ -22,7 +22,7 @@ typedef struct{
 
 void chip8_init(struct_chip8_t* chip8);
 void chip8_load(struct_chip8_t* chip8, const uint8_t *buffer, size_t size);
-void chip8_execute_opcode(struct_chip8_t* chip8, uint16_t opcode);
+void chip8_execute_opcode(struct_chip8_t* chip8, uint16_t opcode, uint8_t quirk_load, uint8_t quirk_shift);
 
 #define CHIP8_CLS  0x00E0    ///< Clears the display
 #define CHIP8_RET  0x00EE    ///< Returns from a subroutine

@@ -29,7 +29,7 @@ const uint8_t chip8_default_character_set[] =
 /*
 * It executes all the opcodes starting with 8000.
 */
-static void chip8_execute_command_8000(struct_chip8_t* chip8, uint16_t opcode)
+static void chip8_execute_command_8000(struct_chip8_t* chip8, uint16_t opcode, uint8_t quirk_shift)
 {
     uint16_t instruction = GET_INSTRUCTION_8(opcode);
     uint16_t temp = 0;
@@ -98,9 +98,16 @@ static void chip8_execute_command_8000(struct_chip8_t* chip8, uint16_t opcode)
         * If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is divided by 2.
         */
         case CHIP8_SHR:
-            
-            chip8->system_registers.v_reg[0x0F] = chip8->system_registers.v_reg[GET_X_VALUE(opcode)] & 0x0001;
-            chip8->system_registers.v_reg[GET_X_VALUE(opcode)] = (chip8->system_registers.v_reg[GET_X_VALUE(opcode)]) >> 1;        
+            if ( quirk_shift == 1 )
+            {
+                chip8->system_registers.v_reg[0x0F] = chip8->system_registers.v_reg[GET_X_VALUE(opcode)] & 0x0001;
+                chip8->system_registers.v_reg[GET_X_VALUE(opcode)] = (chip8->system_registers.v_reg[GET_X_VALUE(opcode)]) >> 1;                        
+            }
+            else
+            {
+                chip8->system_registers.v_reg[0x0F] = chip8->system_registers.v_reg[GET_Y_VALUE(opcode)] & 0x0001;
+                chip8->system_registers.v_reg[GET_X_VALUE(opcode)] = (chip8->system_registers.v_reg[GET_Y_VALUE(opcode)]) >> 1;    
+            }
         break;
 
         /*
@@ -116,8 +123,16 @@ static void chip8_execute_command_8000(struct_chip8_t* chip8, uint16_t opcode)
         * If the most-significant bit of Vx is 1, then VF is set to 1, otherwise to 0. Then Vx is multiplied by 2.
         */
         case CHIP8_SHL:
+        if ( quirk_shift == 1 )
+        {
             chip8->system_registers.v_reg[0x0F] = (chip8->system_registers.v_reg[GET_X_VALUE(opcode)] & 0x80) >> 7;
             chip8->system_registers.v_reg[GET_X_VALUE(opcode)] = chip8->system_registers.v_reg[GET_X_VALUE(opcode)] << 1;
+        }
+        else
+        {
+            chip8->system_registers.v_reg[0x0F] = (chip8->system_registers.v_reg[GET_Y_VALUE(opcode)] & 0x80) >> 7;
+            chip8->system_registers.v_reg[GET_X_VALUE(opcode)] = chip8->system_registers.v_reg[GET_Y_VALUE(opcode)] << 1;
+        }
 
         break;
     }
@@ -181,7 +196,7 @@ static uint8_t chip8_wait_for_key_press(struct_chip8_t* chip8)
 /*
 * Executes the command starting with the opcode F000.
 */
-static void chip8_execute_command_F000(struct_chip8_t* chip8, uint16_t opcode)
+static void chip8_execute_command_F000(struct_chip8_t* chip8, uint16_t opcode, uint8_t quirk_load)
 {
     uint16_t instruction = GET_INSTRUCTION_F(opcode);
     switch (instruction)
@@ -258,6 +273,14 @@ static void chip8_execute_command_F000(struct_chip8_t* chip8, uint16_t opcode)
             {
                 chip8_memory_set(&chip8->system_memory, chip8->system_registers.i_reg + index, chip8->system_registers.v_reg[index]);
             }
+            if ( quirk_load == 0)
+            {
+                chip8->system_registers.i_reg += (GET_X_VALUE(opcode) + 1);
+            }
+            else
+            {
+                // do nothing
+            }
         }
         break;
 
@@ -266,10 +289,17 @@ static void chip8_execute_command_F000(struct_chip8_t* chip8, uint16_t opcode)
         */
         case CHIP8_LD11:
         {
-
             for(uint8_t index = 0; index <= GET_X_VALUE(opcode); index++)
             {
                 chip8->system_registers.v_reg[index] = chip8_memory_get(&chip8->system_memory, chip8->system_registers.i_reg + index);
+            }
+            if ( quirk_load == 0)
+            {
+                chip8->system_registers.i_reg += (GET_X_VALUE(opcode) + 1);
+            }
+            else
+            {
+                // do nothing
             }
         }
 
@@ -277,7 +307,7 @@ static void chip8_execute_command_F000(struct_chip8_t* chip8, uint16_t opcode)
     }
 }
 
-static void chip8_extended_command(struct_chip8_t* chip8, uint16_t opcode)
+static void chip8_extended_command(struct_chip8_t* chip8, uint16_t opcode, uint8_t quirk_load, uint8_t quirk_shift)
 {
     uint16_t instruction = GET_INSTRUCTION(opcode);
     switch (instruction)
@@ -358,7 +388,7 @@ static void chip8_extended_command(struct_chip8_t* chip8, uint16_t opcode)
         * Handles the opcodes starting with 8000.
         */
         case CHIP8_LD2:
-            chip8_execute_command_8000(chip8, opcode);
+            chip8_execute_command_8000(chip8, opcode, quirk_shift);
         break;
 
         /*
@@ -414,7 +444,7 @@ static void chip8_extended_command(struct_chip8_t* chip8, uint16_t opcode)
         * Handles the opcodes starting with F000.
         */
         case CHIP8_F: 
-            chip8_execute_command_F000(chip8, opcode);
+            chip8_execute_command_F000(chip8, opcode, quirk_load);
         break;
     }
 }
@@ -441,7 +471,7 @@ void chip8_load(struct_chip8_t* chip8, const uint8_t *buffer, size_t size)
 /*
 * Executes the opcode.
 */
-void chip8_execute_opcode(struct_chip8_t* chip8, uint16_t opcode)
+void chip8_execute_opcode(struct_chip8_t* chip8, uint16_t opcode, uint8_t quirk_load, uint8_t quirk_shift)
 {
     switch(opcode)
     {
@@ -460,7 +490,7 @@ void chip8_execute_opcode(struct_chip8_t* chip8, uint16_t opcode)
         break;
 
         default:
-            chip8_extended_command(chip8, opcode);
+            chip8_extended_command(chip8, opcode, quirk_load, quirk_shift);
         break;        
     }
 }

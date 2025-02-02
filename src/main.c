@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_timer.h>
+#include <string.h>
 
 #include "config.h"
 #include "chip8.h"
@@ -17,13 +18,48 @@ int main(int argc, char** argv)
 {
     uint8_t buffer[CHIP8_MEMORY_SIZE - CHIP8_PROGRAM_LOAD_ADDR] = {};
     uint16_t opcode = 0;
+    char *filename = 0;
+    char *quirk = 0;
+    uint8_t quirk_load = 0;
+    uint8_t quirk_shift = 0;
 
     if ( argc < 2 )
     {
         printf("You must provide a ROM File\n");
         return 0;
     }
-    const char *filename = argv[1];
+    else if (argc > CHIP8_MAX_ARGUMENTS)
+    {
+        printf("You have entered too many arguments");
+        return 0;
+    }
+    else
+    {
+        for (uint8_t arg_index = 0; arg_index < argc; arg_index++)
+        {
+            if ( arg_index == 1 )
+            {
+                filename = argv[arg_index];
+            }
+            else
+            {
+                quirk = argv[arg_index];
+                if ( strcmp(quirk, "load") == 0 )
+                {
+                    quirk_load = 1;
+                }
+                else if ( strcmp(quirk, "shift") == 0 )
+                {
+                    quirk_shift = 1;
+                }
+                else
+                {
+                    printf("Invalid quirk\n");
+                }
+            }
+        }
+    }
+
     printf("The file to load is %s\n", filename);
     FILE *ROM = fopen(filename, "rb");  // we use the mode rb instead of just r because we want the operating system to treat the file as binary
     if (ROM == NULL)
@@ -121,7 +157,7 @@ int main(int argc, char** argv)
         SDL_RenderPresent(renderer);
         if ( chip8.system_registers.delay_timer_reg > 0 )
         {
-            SDL_Delay(100);
+            SDL_Delay(20);
             chip8.system_registers.delay_timer_reg--;
         }
         if ( chip8.system_registers.sound_timer_reg > 0 )
@@ -130,11 +166,11 @@ int main(int argc, char** argv)
             // Beep(13000, 10 * chip8.system_registers.sound_timer_reg);
             chip8.system_registers.sound_timer_reg = 0;
         }
-        for (uint32_t instructions_per_step=0; instructions_per_step<10; instructions_per_step++)
+        for (uint16_t instructions_per_step = 0; instructions_per_step < 10; instructions_per_step++)
         {
             opcode = chip8_memmory_get_opcode(&chip8.system_memory, chip8.system_registers.pc_reg);
             chip8.system_registers.pc_reg += CHIP8_SIZE_OF_INSTRUCTION;
-            chip8_execute_opcode(&chip8, opcode);
+            chip8_execute_opcode(&chip8, opcode, quirk_load, quirk_shift);
         }
     }   
     SDL_DestroyWindow(window);
