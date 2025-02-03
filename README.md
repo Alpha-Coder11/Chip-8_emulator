@@ -26,7 +26,8 @@ This emulator replicates the behavior of the Chip8 system, allowing you to load 
 
 ### Prerequisites for Linux
 
-
+- Install libsdl2-2.0 and libsdl2-dev. These packages are placed in usr/include/SDL2. I have attached this path in Makefile.
+- GCC and make are installed by default( I think).
 
 ### Installation
 
@@ -51,6 +52,7 @@ This emulator replicates the behavior of the Chip8 system, allowing you to load 
    
    <br><b> For Linux </b>
    <br>Type <b>make</b> in Command Line and hit enter.
+   
    ![alt text](images/build_linux.png)
 
 
@@ -65,11 +67,16 @@ This emulator replicates the behavior of the Chip8 system, allowing you to load 
    ```bash
    Navigate to bin folder
    ```
-   Type <b>main.exe INVADERS shift load</b>.
+   For Windows: Type <b>main.exe INVADERS shift load</b>.
 
    ![alt text](images/Invader_Screen.png)
 
-   Alternatively, you can stay in the root folder and use <b>mingw32-make run</b>. It will build the code and run the INVADER automatically. If you want to change the game you want to play,
+   
+   <br>For Linux: Type <b> ./main.exe INVADERS shift load</b>.
+
+   ![alt text](images/Invader_Screen_Linux.png)
+
+   Alternatively, you can stay in the root folder and use <b>mingw32-make run</b>(this is only working for linux at the moment). It will build the code and run the INVADER automatically. If you want to change the game you want to play,
    you can just change the game in the bin directory and update <b>ROM</b> variable. 
    <br><b>shift </b> and <b> load </b> are flags which enable the quirks in the interpreter, more detail on them is mentioned below.
 

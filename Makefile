@@ -1,16 +1,15 @@
-# UNAME := $(shell uname)
-UNAME = Windows
+OS ?= Windows
 
 INCLUDES= -I ./include 
 
-ifeq ($(UNAME), Linux)
+ifeq ($(OS), Linux)
 INCLUDES+= -I ./usr/include/SDL2
 endif
-ifeq ($(UNAME), Windows)
+ifeq ($(OS), Windows)
 LIBRARIES= -L ./lib
 endif
 
-ifeq ($(UNAME), Windows)
+ifeq ($(OS), Windows)
 MINGW32= -lmingw32
 endif
 MINGW32+= -lSDL2main -lSDL2
@@ -22,7 +21,7 @@ TARGET = bin/main
 ROM = bin/INVADERS
 
 all: ${BUILD_DIR} ${OBJECTS}
-	@echo "Operating System: $(UNAME)"
+	@echo "Operating System: $(OS)"
 	gcc ${FLAGS} ${INCLUDES} ./src/main.c ${OBJECTS} ${LIBRARIES} ${MINGW32} -o ./$(TARGET)
 
 # Ensure the build directory exists
@@ -49,11 +48,11 @@ run: all
 	./$(TARGET) $(ROM)
 
 clean: 
-ifeq ($(UNAME), Linux)
+ifeq ($(OS), Linux)
 	rm build/*.o
 	rm bin/main
 endif
-ifeq ($(UNAME), Windows)
+ifeq ($(OS), Windows)
 	del build\*.o
 	del bin\main.exe
 endif
