@@ -1,4 +1,4 @@
-# Chip8 Emulator
+# Chip8 Interpreter
 
 A lightweight and efficient Chip8 emulator built to run classic Chip8 programs and games. This project is perfect for understanding the fundamentals of emulation, low-level programming, and retro gaming.
 
@@ -18,12 +18,10 @@ This emulator replicates the behavior of the Chip8 system, allowing you to load 
 
 ## Getting Started
 
-### Prerequisites
-
+### Prerequisites for Windows
 - MinGW 32-GCC-G++ version 6.3.0-1
-- Make
-- SDL2 (Simple DirectMedia Layer) library for graphics and input handling.
-> For Windows, we used 
+- MinGW32-Make, it is installed by installing mingw32-base package.
+- SDL2 (Simple DirectMedia Layer) library for graphics and input handling. I am using version [SDL2-devel-2.30.11-mingw](https://github.com/libsdl-org/SDL/releases/tag/release-2.30.11) . 
 - ![alt text](images/mingw32.png)
 
 ### Installation
