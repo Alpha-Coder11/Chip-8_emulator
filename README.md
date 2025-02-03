@@ -24,9 +24,13 @@ This emulator replicates the behavior of the Chip8 system, allowing you to load 
 - SDL2 (Simple DirectMedia Layer) library for graphics and input handling. I am using version [SDL2-devel-2.30.11-mingw](https://github.com/libsdl-org/SDL/releases/tag/release-2.30.11) . 
 - ![alt text](images/mingw32.png)
 
+### Prerequisites for Linux
+
+
+
 ### Installation
 
-1. Clone the repository:
+1. Clone or jsut download the repository:
 
    ```bash
    git clone https://github.com/Alpha-Coder11/Chip-8_emulator.git
@@ -39,12 +43,16 @@ This emulator replicates the behavior of the Chip8 system, allowing you to load 
    ```
 
 3. Build the project:
-
-   Type <b>mingw32-make</b> in Command Line and hit enter
    
-   ![alt text](images/build.png)
+   <br><b> For Windows</b>
+   <br>Type <b>mingw32-make</b> in Command Line and hit enter.
 
-   For Linux, we need to install sdl separately, and after that, we just type <b> make</b>
+   ![alt text](images/build.png)
+   
+   <br><b> For Linux </b>
+   <br>Type <b>make</b> in Command Line and hit enter.
+   ![alt text](images/build_linux.png)
+
 
 4. Download the ROM File 
 
@@ -57,11 +65,13 @@ This emulator replicates the behavior of the Chip8 system, allowing you to load 
    ```bash
    Navigate to bin folder
    ```
-   Type main.exe INVADERS shift load
+   Type <b>main.exe INVADERS shift load</b>.
+
    ![alt text](images/Invader_Screen.png)
 
    Alternatively, you can stay in the root folder and use <b>mingw32-make run</b>. It will build the code and run the INVADER automatically. If you want to change the game you want to play,
-   you can just change the game in the bin directory and update <b>ROM</b> variable. <b>shift </b> and <b> load </b> are flags which enable the quirks in the interpreter, more detail on them is mentioned below.
+   you can just change the game in the bin directory and update <b>ROM</b> variable. 
+   <br><b>shift </b> and <b> load </b> are flags which enable the quirks in the interpreter, more detail on them is mentioned below.
 
 ## Usage
 
@@ -121,6 +131,5 @@ Enabling both ***shift_quirk*** AND ***load_quirk*** is recommended for:
 Contributions are welcome! Feel free to fork the repository, submit issues, or create pull requests. 
 
 ### Notes to Self
-- Two things I learned while building this project, one is forward declaration and the other is memset on 2D array. Current problem is invaders is not working properly with thi emulator version.
-
+- Two things I learned while building this project, one is forward declaration and the other is memset on 2D array
 
